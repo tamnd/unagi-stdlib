@@ -104,27 +104,27 @@ func RunVerify(out, cpython string, offline bool, w io.Writer) error {
 
 	total := len(edited) + len(untracked) + len(missing) + len(blobMismatch)
 	if total == 0 {
-		fmt.Fprintf(w, "OK: %d files verbatim against %s (commit %s)\n", len(entries), hdr.Tag, shortCommit(hdr.Commit))
+		_, _ = fmt.Fprintf(w, "OK: %d files verbatim against %s (commit %s)\n", len(entries), hdr.Tag, shortCommit(hdr.Commit))
 		if offline {
-			fmt.Fprintln(w, "note: upstream identity axis skipped (--offline)")
+			_, _ = fmt.Fprintln(w, "note: upstream identity axis skipped (--offline)")
 		}
 		return nil
 	}
 
-	fmt.Fprintf(w, "FAIL: verbatim drift detected against %s (commit %s)\n\n", hdr.Tag, shortCommit(hdr.Commit))
+	_, _ = fmt.Fprintf(w, "FAIL: verbatim drift detected against %s (commit %s)\n\n", hdr.Tag, shortCommit(hdr.Commit))
 	for _, p := range edited {
-		fmt.Fprintln(w, "  edited       ", p)
+		_, _ = fmt.Fprintln(w, "  edited       ", p)
 	}
 	for _, p := range untracked {
-		fmt.Fprintln(w, "  untracked    ", p, "(present on disk, absent from manifest)")
+		_, _ = fmt.Fprintln(w, "  untracked    ", p, "(present on disk, absent from manifest)")
 	}
 	for _, p := range missing {
-		fmt.Fprintln(w, "  missing      ", p, "(in manifest, absent on disk)")
+		_, _ = fmt.Fprintln(w, "  missing      ", p, "(in manifest, absent on disk)")
 	}
 	for _, p := range blobMismatch {
-		fmt.Fprintln(w, "  blob-mismatch", p, "(bytes differ from the upstream CPython object)")
+		_, _ = fmt.Fprintln(w, "  blob-mismatch", p, "(bytes differ from the upstream CPython object)")
 	}
-	fmt.Fprintf(w, "\n%d problems; run cmd/unagi-vendor to re-sync from upstream, do not hand-edit.\n", total)
+	_, _ = fmt.Fprintf(w, "\n%d problems; run cmd/unagi-vendor to re-sync from upstream, do not hand-edit.\n", total)
 	return fmt.Errorf("verbatim drift: %d problems", total)
 }
 

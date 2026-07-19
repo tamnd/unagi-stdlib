@@ -83,8 +83,8 @@ func SHA256Hex(content []byte) string {
 // object graph, not just against a local recompute.
 func GitBlobHash(content []byte) string {
 	h := sha1.New()
-	fmt.Fprintf(h, "blob %d\x00", len(content))
-	h.Write(content)
+	_, _ = fmt.Fprintf(h, "blob %d\x00", len(content))
+	_, _ = h.Write(content)
 	return hex.EncodeToString(h.Sum(nil))
 }
 
@@ -187,7 +187,7 @@ func ParseManifest(pathIn string) (ManifestHeader, []Entry, error) {
 	if err != nil {
 		return hdr, nil, err
 	}
-	defer f.Close()
+	defer func() { _ = f.Close() }()
 
 	var entries []Entry
 	sc := bufio.NewScanner(f)
@@ -207,7 +207,7 @@ func ParseManifest(pathIn string) (ManifestHeader, []Entry, error) {
 					}
 				}
 			case strings.HasPrefix(line, "# files:"):
-				fmt.Sscanf(line, "# files: %d", &hdr.Files)
+				_, _ = fmt.Sscanf(line, "# files: %d", &hdr.Files)
 			}
 			continue
 		}
