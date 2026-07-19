@@ -1,0 +1,11 @@
+version: 2
+updates:
+  # Keep the GitHub Actions used by the ci and drift workflows current. The Go
+  # module carries no third-party dependencies, so there is no gomod ecosystem
+  # to track here on purpose.
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: ci
