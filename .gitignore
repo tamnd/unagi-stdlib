@@ -1,0 +1,10 @@
+# Compiled Python is never committed; the vendored tree under Lib/ is source
+# only, and this is a second line of defense behind the sync tool's .py-only
+# copy and the drift check's set-equality guard.
+__pycache__/
+*.py[cod]
+
+# Local tool binaries and coverage output.
+/unagi-vendor
+/unagi-stdlib-verify
+*.out

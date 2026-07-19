@@ -1,0 +1,29 @@
+unagi-stdlib
+============
+
+The code under Lib/ is the CPython 3.14.6 standard library, copyright (c) the
+Python Software Foundation and the Python contributors. It is redistributed
+here verbatim, byte for byte, unmodified, under the Python Software Foundation
+License Agreement. See LICENSE for the full text.
+
+Provenance
+----------
+
+  upstream:  CPython
+  tag:       v3.14.6
+  commit:    8594736f5057fdc979d42d2135895d56274589a8
+  subtree:   Lib (in-scope pure-Python modules only; see PROVENANCE.toml)
+
+MANIFEST.sha256 records the sha256 and the upstream git blob hash of every
+vendored file. The drift check (cmd/unagi-stdlib-verify) proves the tree is
+byte-for-byte identical to CPython at that commit. Nothing under Lib/ is our
+work, and nothing under Lib/ is ever edited; a fix a vendored module appears to
+need is filed against tamnd/unagi, never applied here.
+
+Authorship of the surrounding machinery
+---------------------------------------
+
+Everything outside Lib/ (the embed wrapper, the sync tool, the drift check,
+the manifest and provenance format, this NOTICE, the README) is authored by
+Duc-Tam Nguyen <tamnd@liteio.dev> and is the original work of this repository.
+The verbatim Lib/ is the PSF's under the PSF license; the machinery is ours.
