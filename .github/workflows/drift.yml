@@ -1,0 +1,48 @@
+name: drift
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: drift-${{ github.ref }}
+  cancel-in-progress: true
+
+# The verbatim-enforcement gate. This is what makes "unagi runs the standard
+# library without modification" a checkable fact rather than a promise: it
+# recomputes the sha256 of every file under Lib and compares it to the manifest
+# (local self-consistency), and compares the recorded git blob hashes to the
+# upstream CPython objects at the pinned tag (upstream identity). Either axis
+# failing means Lib drifted from upstream, and the PR does not merge.
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: go.mod
+          check-latest: true
+          cache: true
+
+      # Sparse-checkout only the Lib subtree of CPython at the pinned tag, so
+      # the upstream-identity axis re-derives blob hashes from the real source.
+      # The tag comes from the embed.go pin, kept in sync by the drift check
+      # itself: if the manifest header names a different commit, the blob hashes
+      # will not match and this job fails.
+      - name: check out pinned CPython Lib
+        uses: actions/checkout@v4
+        with:
+          repository: python/cpython
+          ref: v3.14.6
+          path: .cpython
+          fetch-depth: 1
+          sparse-checkout: |
+            Lib
+
+      - name: verbatim drift check (local + upstream)
+        run: go run ./cmd/unagi-stdlib-verify --cpython .cpython
