@@ -23,9 +23,13 @@ exclude_files = [
 include_only_suffix = [
   ".py",
 ]
+reinclude = [
+  "Lib/test/__init__.py",
+  "Lib/test/support",
+]
 
 [result]
-files = 557
-lines = 281620
-generated_at = "2026-07-19T10:05:12Z"
+files = 584
+lines = 290867
+generated_at = "2026-07-29T09:59:28Z"
 tool_version = "unagi-vendor 0.1.0"
