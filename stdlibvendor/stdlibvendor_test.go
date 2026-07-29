@@ -77,6 +77,52 @@ func TestScopeEnumerate(t *testing.T) {
 	}
 }
 
+func TestScopeReinclude(t *testing.T) {
+	root := t.TempDir()
+	files := []string{
+		"Lib/os.py",
+		"Lib/test/__init__.py",
+		"Lib/test/test_os.py",
+		"Lib/test/support/__init__.py",
+		"Lib/test/support/os_helper.py",
+		"Lib/test/support/data.txt",
+	}
+	for _, f := range files {
+		p := filepath.Join(root, filepath.FromSlash(f))
+		if err := os.MkdirAll(filepath.Dir(p), 0o755); err != nil {
+			t.Fatal(err)
+		}
+		if err := os.WriteFile(p, []byte("x\n"), 0o644); err != nil {
+			t.Fatal(err)
+		}
+	}
+	scope := Scope{
+		ExcludeDirs:   []string{"Lib/test"},
+		IncludeSuffix: []string{".py"},
+		Reinclude:     []string{"Lib/test/__init__.py", "Lib/test/support"},
+	}
+	got, err := Enumerate(root, scope)
+	if err != nil {
+		t.Fatal(err)
+	}
+	// The named file and subtree come back; test_os.py stays dropped by the
+	// Lib/test exclude, and data.txt by the .py suffix gate.
+	want := []string{
+		"Lib/os.py",
+		"Lib/test/__init__.py",
+		"Lib/test/support/__init__.py",
+		"Lib/test/support/os_helper.py",
+	}
+	if len(got) != len(want) {
+		t.Fatalf("Enumerate = %v, want %v", got, want)
+	}
+	for i := range want {
+		if got[i] != want[i] {
+			t.Fatalf("Enumerate[%d] = %s, want %s (full %v)", i, got[i], want[i], got)
+		}
+	}
+}
+
 func TestDiff(t *testing.T) {
 	prev := []Entry{
 		{Path: "Lib/a.py", SHA256: "1"},
@@ -141,6 +187,10 @@ exclude_dirs = [
 ]
 exclude_files = ["Lib/turtle.py"]
 include_only_suffix = [".py"]
+reinclude = [
+  "Lib/test/__init__.py",
+  "Lib/test/support",
+]
 `
 	if err := os.WriteFile(path, []byte(content), 0o644); err != nil {
 		t.Fatal(err)
@@ -161,6 +211,9 @@ include_only_suffix = [".py"]
 	if len(p.Scope.IncludeSuffix) != 1 || p.Scope.IncludeSuffix[0] != ".py" {
 		t.Fatalf("include_only_suffix = %v", p.Scope.IncludeSuffix)
 	}
+	if len(p.Scope.Reinclude) != 2 || p.Scope.Reinclude[1] != "Lib/test/support" {
+		t.Fatalf("reinclude = %v", p.Scope.Reinclude)
+	}
 }
 
 // TestEmitProvenanceRoundTrips pins the determinism property: EmitProvenance's
@@ -175,6 +228,7 @@ func TestEmitProvenanceRoundTrips(t *testing.T) {
 			ExcludeDirs:   []string{"Lib/test"},
 			ExcludeFiles:  []string{"Lib/turtle.py"},
 			IncludeSuffix: []string{".py"},
+			Reinclude:     []string{"Lib/test/__init__.py", "Lib/test/support"},
 		},
 	}
 	text := EmitProvenance(p, 557, 281620, "2026-07-19T00:00:00Z")
@@ -192,5 +246,8 @@ func TestEmitProvenanceRoundTrips(t *testing.T) {
 	}
 	if len(got.Scope.ExcludeDirs) != 1 || got.Scope.ExcludeDirs[0] != "Lib/test" {
 		t.Fatalf("round-trip scope = %+v", got.Scope)
+	}
+	if len(got.Scope.Reinclude) != 2 || got.Scope.Reinclude[0] != "Lib/test/__init__.py" {
+		t.Fatalf("round-trip reinclude = %+v", got.Scope.Reinclude)
 	}
 }

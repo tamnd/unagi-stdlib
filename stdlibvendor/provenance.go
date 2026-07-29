@@ -54,6 +54,8 @@ func LoadProvenance(pathIn string) (*Provenance, error) {
 					p.Scope.ExcludeFiles = vals
 				case "include_only_suffix":
 					p.Scope.IncludeSuffix = vals
+				case "reinclude":
+					p.Scope.Reinclude = vals
 				}
 			}
 			continue
@@ -102,6 +104,7 @@ func EmitProvenance(p *Provenance, files, lines int, generatedAt string) string 
 	writeArray(&b, "exclude_dirs", p.Scope.ExcludeDirs)
 	writeArray(&b, "exclude_files", p.Scope.ExcludeFiles)
 	writeArray(&b, "include_only_suffix", p.Scope.IncludeSuffix)
+	writeArray(&b, "reinclude", p.Scope.Reinclude)
 	b.WriteString("\n")
 
 	b.WriteString("[result]\n")

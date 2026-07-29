@@ -26,20 +26,40 @@ import (
 
 // Scope is the machine-readable form of the vendor-versus-drop rules. It is the
 // [scope] block of PROVENANCE.toml: which directories and files under Lib are
-// dropped, and which suffixes are copied.
+// dropped, which suffixes are copied, and which paths under a dropped directory
+// are pulled back in.
 type Scope struct {
 	ExcludeDirs   []string
 	ExcludeFiles  []string
 	IncludeSuffix []string
+	Reinclude     []string
 }
 
-// excluded reports whether a Lib-relative slash path is dropped by the scope.
+// excluded reports whether a Lib-relative slash path is dropped by the scope. A
+// reinclude entry wins over an exclude, so a named subtree or file under an
+// otherwise-dropped directory is vendored: that is how the test/support helpers
+// come in while the rest of Lib/test stays out.
 func (s Scope) excluded(rel string) bool {
+	if s.reincluded(rel) {
+		return false
+	}
 	if slices.Contains(s.ExcludeFiles, rel) {
 		return true
 	}
 	for _, d := range s.ExcludeDirs {
 		if rel == d || strings.HasPrefix(rel, d+"/") {
+			return true
+		}
+	}
+	return false
+}
+
+// reincluded reports whether rel is a reinclude entry or sits under one. An
+// entry is matched as an exact path or as a directory prefix, so both a single
+// file (Lib/test/__init__.py) and a subtree (Lib/test/support) pull back in.
+func (s Scope) reincluded(rel string) bool {
+	for _, r := range s.Reinclude {
+		if rel == r || strings.HasPrefix(rel, r+"/") {
 			return true
 		}
 	}
