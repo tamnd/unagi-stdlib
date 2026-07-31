@@ -26,10 +26,12 @@ include_only_suffix = [
 reinclude = [
   "Lib/test/__init__.py",
   "Lib/test/support",
+  "Lib/test/test_genericpath.py",
+  "Lib/test/test_posixpath.py",
 ]
 
 [result]
-files = 584
-lines = 290867
-generated_at = "2026-07-29T09:59:28Z"
+files = 586
+lines = 292646
+generated_at = "2026-07-31T14:47:22Z"
 tool_version = "unagi-vendor 0.1.0"
