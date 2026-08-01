@@ -28,10 +28,14 @@ reinclude = [
   "Lib/test/support",
   "Lib/test/test_genericpath.py",
   "Lib/test/test_posixpath.py",
+  "Lib/test/test_graphlib.py",
+  "Lib/test/test_heapq.py",
+  "Lib/test/test_bisect.py",
+  "Lib/test/test_textwrap.py",
 ]
 
 [result]
-files = 586
-lines = 292646
-generated_at = "2026-07-31T14:47:22Z"
+files = 590
+lines = 295108
+generated_at = "2026-08-01T09:54:55Z"
 tool_version = "unagi-vendor 0.1.0"
