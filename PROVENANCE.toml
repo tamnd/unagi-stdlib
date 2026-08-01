@@ -32,10 +32,23 @@ reinclude = [
   "Lib/test/test_heapq.py",
   "Lib/test/test_bisect.py",
   "Lib/test/test_textwrap.py",
+  "Lib/test/cjkencodings",
+  "Lib/test/multibytecodec_support.py",
+  "Lib/test/test_codecs.py",
+  "Lib/test/test_unicodedata.py",
+  "Lib/test/test_multibytecodec.py",
+  "Lib/test/test_codecencodings_cn.py",
+  "Lib/test/test_codecencodings_hk.py",
+  "Lib/test/test_codecencodings_jp.py",
+  "Lib/test/test_codecencodings_kr.py",
+  "Lib/test/test_codecencodings_tw.py",
+  "Lib/test/test_codecencodings_iso2022.py",
+  "Lib/test/test_locale.py",
+  "Lib/test/test_gettext.py",
 ]
 
 [result]
-files = 590
-lines = 295108
-generated_at = "2026-08-01T09:54:55Z"
+files = 632
+lines = 303208
+generated_at = "2026-08-01T22:42:31Z"
 tool_version = "unagi-vendor 0.1.0"
