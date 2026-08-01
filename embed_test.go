@@ -2,6 +2,7 @@ package unagistdlib_test
 
 import (
 	"io/fs"
+	"strings"
 	"testing"
 
 	unagistdlib "github.com/tamnd/unagi-stdlib"
@@ -44,8 +45,11 @@ func TestFSExcludesDroppedTrees(t *testing.T) {
 	}
 }
 
-// TestEmbedIsAllPy is a coarse guard that nothing but .py rode into the embed,
-// matching the include_only_suffix scope rule.
+// TestEmbedIsAllPy is a coarse guard on what rode into the embed. Everything
+// outside Lib/test is .py, matching the include_only_suffix scope rule. Under
+// Lib/test a few non-.py data files come in on purpose: the reinclude list
+// carries the conformance suites' fixtures (the cjkencodings codec strings),
+// and those are the only allowed exception.
 func TestEmbedIsAllPy(t *testing.T) {
 	f := unagistdlib.FS()
 	err := fs.WalkDir(f, "Lib", func(p string, d fs.DirEntry, err error) error {
@@ -55,9 +59,13 @@ func TestEmbedIsAllPy(t *testing.T) {
 		if d.IsDir() {
 			return nil
 		}
-		if len(p) < 3 || p[len(p)-3:] != ".py" {
-			t.Errorf("non-.py file embedded: %s", p)
+		if strings.HasSuffix(p, ".py") {
+			return nil
 		}
+		if strings.HasPrefix(p, "Lib/test/") {
+			return nil
+		}
+		t.Errorf("non-.py file embedded outside Lib/test: %s", p)
 		return nil
 	})
 	if err != nil {
