@@ -32,6 +32,7 @@ reinclude = [
   "Lib/test/test_heapq.py",
   "Lib/test/test_bisect.py",
   "Lib/test/test_textwrap.py",
+  "Lib/test/cjkencodings",
   "Lib/test/multibytecodec_support.py",
   "Lib/test/test_codecs.py",
   "Lib/test/test_unicodedata.py",
@@ -47,7 +48,7 @@ reinclude = [
 ]
 
 [result]
-files = 602
-lines = 302974
-generated_at = "2026-08-01T22:38:05Z"
+files = 632
+lines = 303208
+generated_at = "2026-08-01T22:42:31Z"
 tool_version = "unagi-vendor 0.1.0"

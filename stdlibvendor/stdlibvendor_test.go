@@ -106,11 +106,15 @@ func TestScopeReinclude(t *testing.T) {
 		t.Fatal(err)
 	}
 	// The named file and subtree come back; test_os.py stays dropped by the
-	// Lib/test exclude, and data.txt by the .py suffix gate.
+	// Lib/test exclude. data.txt sits under the reincluded support subtree, so
+	// it comes in too: a reinclude entry overrides the suffix gate as well as
+	// the exclude, which is how non-.py test data (the cjkencodings codec
+	// strings) is vendored.
 	want := []string{
 		"Lib/os.py",
 		"Lib/test/__init__.py",
 		"Lib/test/support/__init__.py",
+		"Lib/test/support/data.txt",
 		"Lib/test/support/os_helper.py",
 	}
 	if len(got) != len(want) {

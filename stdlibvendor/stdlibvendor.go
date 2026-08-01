@@ -126,7 +126,11 @@ func Enumerate(srcRoot string, scope Scope) ([]string, error) {
 			return err
 		}
 		rel = filepath.ToSlash(rel)
-		if scope.excluded(rel) || !scope.included(rel) {
+		// A reinclude entry is an explicit allowlist that overrides both the
+		// exclude rules (via excluded) and the suffix filter, so a named data
+		// file or subtree under Lib/test comes in even when it is not a .py
+		// (the cjkencodings codec test strings, for one).
+		if scope.excluded(rel) || (!scope.reincluded(rel) && !scope.included(rel)) {
 			return nil
 		}
 		out = append(out, rel)
