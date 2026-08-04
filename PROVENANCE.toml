@@ -45,10 +45,20 @@ reinclude = [
   "Lib/test/test_codecencodings_iso2022.py",
   "Lib/test/test_locale.py",
   "Lib/test/test_gettext.py",
+  "Lib/test/test_struct.py",
+  "Lib/test/test_array.py",
+  "Lib/test/test_binascii.py",
+  "Lib/test/test_math.py",
+  "Lib/test/test_cmath.py",
+  "Lib/test/test_decimal.py",
+  "Lib/test/test_fractions.py",
+  "Lib/test/test_random.py",
+  "Lib/test/test_statistics.py",
+  "Lib/test/mathdata",
 ]
 
 [result]
-files = 632
-lines = 303208
-generated_at = "2026-08-01T22:42:31Z"
+files = 646
+lines = 327363
+generated_at = "2026-08-04T07:18:51Z"
 tool_version = "unagi-vendor 0.1.0"
